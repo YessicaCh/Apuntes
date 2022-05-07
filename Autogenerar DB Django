@@ -1,0 +1,3 @@
+pip install pydot 
+sudo apt-get install graphviz
+ python manage.py graph_models -a -g -o nombre_archivo.png 
