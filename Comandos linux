@@ -1,23 +1,23 @@
-memory usage on linux:
+**memory usage on linux**
 $ free -m
 
-procesos que se usan 
+**procesos que se usan** 
 $ps -aux
 
-check memory usage is to read the /proc/meminfo file
+**check memory usage is to read the /proc/meminfo file**
 $ cat /proc/meminfo
 
-The vmstat command with the s option, lays out the memory usage statistics 
+**The vmstat command with the s option, lays out the memory usage statistics** 
 $ vmstat -s
 
-RAM Information
+**RAM Information**
 $ sudo dmidecode -t 17
 
-spacio en uso 
+**spacio en uso** 
 $ df -h
 
 
-#Aperturar puertos
+**Aperturar puertos**
 $ sudo ufw allow 19332
 8090(tron)
 
