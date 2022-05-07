@@ -1,0 +1,47 @@
+memory usage on linux:
+$ free -m
+
+procesos que se usan 
+$ps -aux
+
+check memory usage is to read the /proc/meminfo file
+$ cat /proc/meminfo
+
+The vmstat command with the s option, lays out the memory usage statistics 
+$ vmstat -s
+
+RAM Information
+$ sudo dmidecode -t 17
+
+spacio en uso 
+$ df -h
+
+
+#Aperturar puertos
+$ sudo ufw allow 19332
+8090(tron)
+
+ip de escucha con puerto 19332
+
+#sudo netstat -plnut | grep 19332
+netstat -lntu
+netstat -na | grep :4000
+telnet [hostname/IP address] [port number]
+
+#Encontrar carpeta .litecoin
+$ find ~/.litecoin/
+
+#hablilate ufw
+
+sudo ufw status
+
+sudo ufw enable
+
+sudo ufw disable
+
+#abrir puerto con tcp
+sudo ufw allow 8545/tcp
+cd 
+#create Virtualenv env
+
+virtualenv env --python=python3
