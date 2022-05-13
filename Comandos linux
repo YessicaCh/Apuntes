@@ -1,6 +1,12 @@
 **memory usage on linux**
 $ free -m
 
+mongouser
+k2pHutTIzPZPQnB5
+
+
+
+
 **procesos que se usan** 
 $ps -aux
 
