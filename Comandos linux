@@ -15,7 +15,9 @@ $ sudo dmidecode -t 17
 
 **spacio en uso** 
 $ df -h
-
+#Create environment in python 
+ python3 -m venv /path/to/new/virtual/environment
+ python -m venv env
 
 **Aperturar puertos**
 $ sudo ufw allow 19332
