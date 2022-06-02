@@ -5,6 +5,8 @@ mongouser
 k2pHutTIzPZPQnB5
 
 
+**crear ambiente**
+$ python -m venv env
 
 
 **procesos que se usan** 
