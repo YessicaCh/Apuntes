@@ -1,3 +1,7 @@
+https://simpleit.rocks/es/python/django/generar-diagramas-clases-uml-modelos-django/
+https://graphviz.org/download/
+rediccionar bien el path en windows
+
 pip install pydot 
 sudo apt-get install graphviz
  python manage.py graph_models -a -g -o nombre_archivo.png 
