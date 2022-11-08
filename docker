@@ -1,2 +1,4 @@
 Paquete de actualización del kernel WSL2 Linux para máquinas x64
 https://docs.microsoft.com/en-us/windows/wsl/install-manual
+# Correr un docker-compose.yml
+https://docs.docker.com/get-started/08_using_compose/#run-the-application-stack
