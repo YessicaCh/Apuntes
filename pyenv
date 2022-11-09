@@ -1,0 +1,12 @@
+# pyenv cambiar las versiones de python 
+# https://rkadezone.wordpress.com/2020/09/14/pyenv-win-virtualenv-windows/
+
+#SOLO SI NO ESTA instalado 
+python -m pip install  virtualenv
+
+
+pyenv versions
+pyenv install 3.8.5
+pyenv local 3.8.5
+python -m venv env
+source  env\Scripts\activate
