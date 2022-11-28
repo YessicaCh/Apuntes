@@ -1,0 +1,345 @@
+Deployment
+Pasos previos
+# Actualizar
+$ sudo apt-get -y update && sudo apt-get -y upgrade
+
+# Crear usuario
+$ adduser USERNAME
+
+# Asignar permisos de root al usuario
+$ gpasswd -a USERNAME sudo
+
+# Update the PasswordAuthentication parameter in the /etc/ssh/sshd_config file:
+PasswordAuthentication yes
+$ sudo service ssh restart
+
+# Probar el locale settings
+$ perl -v
+# Añadir LC_ALL="en_US.UTF-8" en environment
+$ sudo echo LC_ALL="en_US.UTF-8" >> /etc/environment
+# Reiniciar el servidor
+$ sudo shutdown -r now
+Instalar Python
+$ sudo apt update 
+$ sudo apt install wget software-properties-common
+$ sudo add-apt-repository ppa:deadsnakes/ppa
+$ sudo apt update 
+$ sudo apt install python3.9
+$ python3.9 -V
+Inicio de la implementación
+# Instalación de herramientas
+$ sudo apt-get -y install htop vim git-core
+
+# (Opcional)
+$ sudo apt-get -y install mercurial
+
+# nginx
+$ sudo apt-get -y install nginx
+
+# Postgres
+$ sudo apt install -y postgresql postgresql-contrib
+# Si necesita libicu55
+$ sudo add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main" 
+$ sudo apt-get update 
+$sudo apt-get install libicu55
+# Habilitar el login usando password 
+$ sudo vim /etc/postgresql/12/main/pg_hba.conf
+# Database administrative login by Unix domain socket
+local   all             postgres                                md5
+
+# MySQL server
+$ sudo apt-get -y install mysql-client mysql-server mysql-common libmysqlclient-dev 
+
+# MySQL client
+$ sudo apt -y install libmysqlclient-dev
+
+# Instalación de PIP
+$ sudo apt-get -y install python3.9 python3.9-dev python3.9-venv python3-setuptools
+
+# Instalación de supervisor
+$ sudo apt-get -y install supervisor
+
+# Dependencias de pillow https://pillow.readthedocs.io/en/stable/installation.html 
+$ sudo apt-get install -y python3-dev python3-setuptools
+$ sudo apt-get install -y libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev \
+    libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk \
+    libharfbuzz-dev libfribidi-dev libxcb1-dev
+
+# Dependencias de graphviz
+$ sudo apt -y install graphviz libgraphviz-dev pkg-config
+
+# Dependencias de requests[security]
+$ sudo apt-get -y install libffi-dev libssl-dev
+
+# Dependencias lxml
+$ sudo apt-get install -y libxml2-dev libxslt-dev
+
+# Python 3
+$ sudo apt-get install -y python3-pip python3-venv
+$ sudo apt-get install -y build-essential libssl-dev libffi-dev python3-dev
+Base de datos con PostgreSQL
+# Se accede como usuario postgres
+$ sudo su - postgres
+
+# Se crea la base de datos
+$ createdb DATABASE
+
+# Creamos el usuario 
+$ createuser PROJECT -P
+
+# Restaurar DB existente
+$ psql -U username -d dbname < filename.sql
+
+# Damos permisos al usuario para la base de datos
+$ psql
+>> \connect DATABASE
+>> GRANT ALL PRIVILEGES ON DATABASE DATABASE TO PROJECT;
+>> CREATE EXTENSION IF NOT EXISTS hstore;
+>> CREATE EXTENSION IF NOT EXISTS postgis;
+>> \q
+
+# Cambiar contraseña de un usuario
+$ psql
+>> ALTER USER "postgres" WITH PASSWORD 'alulab';
+Base de datos con MySQL
+$ mysql -u root -p
+>> SHOW DATABASES;
+>> CREATE DATABASE `DATABASE` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+>> \q
+Creación del proyecto
+# Clonar el proyecto
+$ git clone REPOSITORIO
+
+# Creación del virtualenv
+$ cd PROJECT_DIR
+$ python3 -m venv env
+
+# Instalación de requerimientos
+$ source env/bin/activate
+$ pip install -r requeriments.txt
+
+# Configurar conexión a la DB en settings.py del proyecto
+
+# Postgres
+DEBUG= False
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'PROJECT', 
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+    }
+}
+
+
+# Mysql
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'PROJECT',
+        'USER': 'root',
+        'PASSWORD': 'alulab',
+    }
+}
+
+
+# Crear las tablas de la base de datos
+$ python manage.py migrate
+Configuración de gunicorn
+https://gist.github.com/postrational/5747293
+
+# Crear la configuración de gunicorn 
+$ vim gunicorn_start.bash
+#!/bin/bash
+
+NAME=project  # Name of the application
+USER=pytel  # the user to run as
+PROJECTDIR=/var/www/erp  # Django project directory
+SOCKFILE=$PROJECTDIR/gunicorn.sock  # We will communicte using this unix socket
+VIRTUALENV=$PROJECTDIR/env
+
+# Activate the virtual environment
+cd $PROJECTDIR/src || source $VIRTUALENV/bin/activate
+
+# Create the run directory if it doesn't exist
+RUNDIR=$(dirname $SOCKFILE)
+test -d $RUNDIR || mkdir -p $RUNDIR
+
+# Start your Django Unicorn, programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
+exec $VIRTUALENV/bin/gunicorn project.wsgi:application \
+  --name $NAME --workers 2 --user=$USER --bind=unix:$SOCKFILE
+
+
+# Permisos de ejecución
+$ sudo chmod u+x gunicorn_start.bash
+
+# Probar script
+$ ./gunicorn_start.bash
+Configuración de supervisor
+# Añadir charset utf-8 a la seccion [supervisord] de /etc/supervisor/supervisord.conf
+[supervisord]
+environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8
+
+
+# Arrancar con permisos de un usuario
+[unix_http_server]
+file=/var/tmp/supervisord.sock
+chmod=0770
+chown=pytel:web
+
+[supervisorctl]
+serverurl=/var/tmp/supervisord.sock
+
+Ref. Using supervisorctl with linux permissions but without root or sudo
+
+# Asegurar su funcionamiento
+$ sudo service supervisor restart
+
+# Crear archivo de configuración del proyecto
+$ mkdir ~/logs
+$ sudo vim /etc/supervisor/conf.d/PROJECT.conf
+
+# Para reemplazar PROJECT por bar en vim
+%s/PROJECT/bar/gci
+[program:PROJECT]
+command = /home/pytel/webapps/PROJECT/gunicorn_start.bash  ; Command to start app
+user = pytel  ; User to run as
+stdout_logfile = /home/pytel/logs/PROJECT.supervisor.log  ; Where to write log messages
+redirect_stderr = true  ; Save stderr in the same log
+
+
+# Crear archivo de configuración del proyecto
+$ sudo vim /etc/supervisor/conf.d/PROJECT_tasks.conf
+[program:PROJECT_tasks]
+command = /home/hexas/.virtualenvs/PROJECT/bin/python /home/hexas/webapps/PROJECT/manage.py process_tasks
+directory = /home/pytel/webapps/PROJECT
+user = hexas
+stdout_logfile=/home/pytel/logs/PROJECT_tasks-supervisord.log    
+redirect_stderr = true  ; Save stderr in the same log
+autostart=true
+autorestart=false
+stopsignal=INT
+stopwaitsecs=2
+startsecs=2
+stdout_logfile_backups=20
+stdout_logfile_maxbytes=20MB
+
+
+
+# Recarga la configuración de supervisor
+$ sudo supervisorctl reread && sudo supervisorctl update
+
+# Para reiniciar el proyecto
+$ sudo supervisorctl restart PROJECT
+Configuración de nginx
+# Creación la configuración del virtualhost
+$ cd /etc/nginx/sites-available/
+$ sudo vim PROJECT
+
+# Reemplazar usando vim “%s/PROJECT/bar/gci”
+upstream PROJECT_app_server {
+  server unix:/home/pytel/webapps/PROJECT/gunicorn.sock fail_timeout=0;
+}
+
+server {
+
+    # the port your site will be served on
+    listen 80;
+    # the domain name it will serve for
+    server_name DOMAIN;
+    
+      # max upload size
+    client_max_body_size 20M;
+
+    access_log /home/pytel/logs/PROJECT_nginx-access.log;
+    error_log /home/pytel/logs/PROJECT_nginx-error.log;
+ 
+    location /static/ {
+        autoindex off;
+        alias /home/pytel/webapps/PROJECT/src/static_files/;
+    }
+    
+    location /media/ {
+        autoindex off;
+        alias /home/pytel/webapps/PROJECT/src/media/;
+    }
+
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+
+        if (!-f $request_filename) {
+            proxy_pass http://PROJECT_app_server;
+            break;
+        }
+    }
+
+    # Error pages
+    error_page 500 502 503 504 /500.html;
+    location = /500.html {
+        root /home/pytel/webapps/src/static/;        
+    }
+}
+
+Ref. https://gist.github.com/postrational/5747293#file-hello-nginxconf
+
+# Probar configuración de nginx
+$ sudo nginx -t
+
+# Habilitar el virtualhost
+$ cd /etc/nginx/sites-enabled
+$ sudo ln -s ../sites-avaiable/PROJECT
+
+# Reiniciar nginx
+$ sudo service nginx restart
+Comandos útiles
+
+# Listar puertos en uso
+$ netstat -tulpn
+
+# Abrir log
+$ less mylog
+
+# Reemplazar usando VIM
+:%s/foo/bar/g
+
+# Descargar archivo ssh
+$ scp user@remotehost.edu:foobar.txt /some/local/directory
+$ scp gcastillo@54.234.59.38://var/www/vhosts/cmsprensmart/promosmart_20170526.sql ./
+
+
+# Buscar y eliminar archivos .pyc
+$ find . -name *.pyc
+$ find . -name "*.pyc" -delete
+
+# Desconectar el .sock de supervisor
+$ unlink /tmp/supervisor.sock
+
+# Crear llave ssh
+$ ssh-keygen
+$ cat ~/.ssh/id_rsa.pub
+Fuentes
+Django UnicodeEncodeError when uploading files
+How To Install and Configure Django with Postgres, Nginx, and Gunicorn
+How To Install and Manage Supervisor on Ubuntu and Debian VPS
+How To Install Python 3 and Set Up a Programming Environment on an Ubuntu 16.04 Server
+Using supervisorctl with linux permissions but without root or sudo 
+https://djangocentral.com/how-to-fix-fatal-peer-authentication-failed-for-user-postgres-error/
+https://www.digitalocean.com/docs/databases/postgresql/how-to/modify-user-privileges/
+How To Install an SSL Certificate from a Commercial Certificate Authority
+
+# Install ZSH
+$ sudo apt-get install zsh && sudo apt-get install fish
+$ sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+
+# Setup virtualenvwrapper in zsh 
+$ source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
+$ echo source /usr/share/virtualenvwrapper/virtualenvwrapper.sh >> ~/.zshrc
+
+Install ZSH, Oh My Zsh and themes in Ubuntu on Windows
+Setup virtualenvwrapper in zsh
+
+# Change default shell /usr/bin/zsh or /bin/bash
+$ chsh -s /bin/bash
