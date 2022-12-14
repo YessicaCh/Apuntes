@@ -32,7 +32,7 @@ $ sudo ufw allow 19332
 8090(tron)
 
 ip de escucha con puerto 19332
-
+--format=t --create --if-exists --clean --file="/Users/jmac/Downloads/backup_trackmybus_23_11_2022-09_21_am.dump" --dbname=trackmybus
 #sudo netstat -plnut | grep 19332
 netstat -lntu
 netstat -na | grep :4000
