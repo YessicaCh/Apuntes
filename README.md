@@ -139,3 +139,85 @@ _Nota: El comando para renovar el certbot esta instalado en uno de estos directo
 - /etc/crontab/
 - /etc/cron.*/*
 - systemctl list-timers
+
+
+# Comandos
+
+**1 - Iniciar Instancias (Todos los servicios):**
+
+```bash
+    $ docker-compose up
+```
+
+**2 - Iniciar Instancia solo de Django:**
+
+ ```bash
+    $ docker rm -f django
+    $ docker-compose run --rm --service-ports django
+ ```
+
+**3 - Migración de Esquemas:**
+
+```bash
+    $ docker-compose run --rm django python manage.py makemigrations
+    $ docker-compose run --rm django python manage.py migrate
+```
+
+**4 - Crear Superusuario:**
+
+```bash
+    $ docker-compose run --rm django python manage.py createsuperuser
+```
+
+**5 - Ingresa a la consola de Django desde docker:**
+
+```bash
+    $ docker-compose run --rm django python manage.py shell_plus
+```
+
+**6 - Reinicio Limpio de backend:**
+
+```bash
+    $ docker-compose down # baja y elimina contenedores principales
+    $ docker volume rm $(docker volume ls -q) # Borra los volumenes
+    $ docker-compose **up**
+```
+
+**7 - Instalar Paquetes de PIP**: _(agregarlo a los requeriments, si es necesarío)_
+
+```bash
+    $ docker-compose run --rm django pip <paquete>
+```
+
+**8 - Cargar Datos desde un archivo fixtures:**
+
+```bash
+    $ docker-compose run --rm django python manage.py loaddata <fixturename>
+```
+
+**9 - Cargar todos los datos dede fixtures:** _nota: Agregar nuevos fixtures al archivo run_fixtures.sh, si son creados_
+
+```bash
+    $ ./run_fixtures.sh
+```
+
+**10 - Aplicar certificados SSL:**
+
+```bash
+    $ snap install core; sudo snap refresh core
+    $ snap install --classic certbot # Instala certbot
+    $ ln -s /snap/bin/certbot /usr/bin/certbot # Prepara certbot
+    $ certbot --nginx 
+```
+
+**11 - Renovar certificados SSL:**
+
+```bash
+    $ certbot renew --dry-run
+```
+
+_Nota: El comando para renovar el certbot esta instalado en uno de estos directorios_
+
+- /etc/crontab/
+- /etc/cron.*/*
+- systemctl list-timers
