@@ -80,11 +80,15 @@ sudo chown -R akito /home/akito/test/
 
 #backup postgres
 sudo -i -u postgres 
+
 pg_dump -U api_caja -W -h 127.0.0.1 api_caja_9780> backup1712021.sql
 
 pg_restore -h 127.0.0.1 -p 5432 -U api_caja_test -d api_caja_tes < backup1712021.sql
 
 psql -h 127.0.0.1 -p 5432 -U api_caja_test -W -d api_caja_tes < backup31012022.sql
+
+#POSTGRES EN DOCKER 
+docker exec -it postgres_trackmybus psql -U trackmybus_user -d trackmybus
 
 $\l
 $\c api_caja_test
