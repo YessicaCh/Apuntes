@@ -112,6 +112,11 @@ Luego el mensaje como tal, espeficando la parte del código impactado por los ca
 ```bash
     $ docker-compose run --rm django python manage.py loaddata <fixturename>
 ```
+**8.1 - Logs:**
+
+```bash
+    $ docker-compose logs -f django 
+```
 **9 - Ver los logs de un servicio docker :**
 
 ```bash
