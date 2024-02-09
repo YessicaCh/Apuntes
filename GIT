@@ -1,0 +1,40 @@
+Si deseas actualizar tu rama local con los cambios de la rama master en Git sin subir tus cambios, puedes seguir estos pasos:
+
+# 1)Asegúrate de estar en tu rama actual:
+
+``` git checkout <nombre-de-tu-rama> ```
+
+
+# 2) Guarda tus cambios actuales en un commit temporal (puedes revertirlo más tarde):
+
+``` git stash
+ ```
+# 3)Actualiza tu rama local con los cambios de la rama master:
+
+``` 
+git pull origin master
+ ```
+# 4)Si es necesario, vuelve a aplicar tus cambios guardados:
+
+``` 
+git stash apply
+ ```
+# 5) O si deseas descartar los cambios guardados:
+
+``` 
+git stash drop
+```
+# 6) O simplemente puedes aplicar los cambios guardados y eliminarlos del stash en un solo paso:
+
+``` 
+git stash pop
+```
+Ahora tu rama local debería estar actualizada con los cambios de la rama master sin necesidad de subir tus cambios a tu rama. Ten en cuenta que si tus cambios locales entran en conflicto con los cambios de la rama master, deberás resolver esos conflictos manualmente durante el paso 4.
+
+
+
+
+    ```python
+    country_id = models.ForeignKey(to=Country, ...)
+    department_ids = mdoels.ManyToManyField(to=Department, ...)
+    ```
