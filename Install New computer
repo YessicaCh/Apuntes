@@ -1,0 +1,23 @@
+#1.- Instalar docker  desktop
+#2.- Instalar PowerShell wls --install PowerShell
+
+Para desarrollar una aplicación python, se necesita:
+
+El intérprete de python, que lo pueden descargar de su sitio web oficial: https://www.python.org/downloads/
+
+Se recomienda instalar la versión 3.10.6 o superior.
+
+Y un editor de código (IDE), pudiendo ser:
+Visual Code: https://code.visualstudio.com/
+PyCharm: https://www.jetbrains.com/pycharm/
+U otro IDE donde se sientan cómodos trabajar.
+
+Herramientas adicionales:
+
+Si estás trabajando sobre un entorno Windows:
+
+Instalar GIT, pueden instalar Git Bash. https://git-scm.com/downloads
+
+Instalar Cygwin, para instalar herramientas de linux sobre Windows. https://www.cygwin.com/
+
+Con la instalación de Git Bash, podrás acceder a su herramienta de consola, sin embargo si deseas puedes instalar Hyper. https://hyper.is/
