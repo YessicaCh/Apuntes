@@ -1,0 +1,11 @@
+1. Add name and gmail
+git config --global user.name "Yessica Chuctaya"
+git config --global user.email "y.chuctaya@xxxx"
+
+2. Generar claves SSH:
+''' ssh-keygen -t rsa -b 4096 -C "tu_correo_electronico@dominio.com" '''
+
+3. Ver clave publica 
+''' cat ~/.ssh/id_rsa.pub '''
+
+4. Agregar ssh a profile del gitlab
